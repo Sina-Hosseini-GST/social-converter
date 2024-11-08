@@ -85,34 +85,43 @@
 		nameEntries = [];
 		outputText = '';
 		
-		for (let i = 0; i < inputText.split(space).length; i++) {
-			const outerWord = inputText.split(space)[i];
-			outputText += outerWord + space;
-			for (let j = 0; j < informations.length; j++) {
-				const outerInformation = informations[j];
-				for (let k = 0; k < outerInformation.accounts.length; k++) {
-					const outerAccount = outerInformation.accounts[k];
-					if (outerWord[0] === '@' && outerAccount.userName === outerWord && outerAccount.socialMedia === inputSocialMedia) {
-						console.log(outputText);
-						let outputTextDuplicate = outputText;
-						outputText = '';
-						for (let l = 0; l < outputTextDuplicate.split(space).length - 2; l++) {
-							const outputTextDuplicateWord = outputTextDuplicate.split(space)[l];
-							outputText += outputTextDuplicateWord + space;
-						}
-						
-						if (nameEntries.indexOf(outerInformation.name) === - 1) {
-							nameEntries.push(outerInformation.name);
-						}
-						loop: for (let l = 0; l < inputText.split(space).length; l++) {
-							const word = inputText.split(space)[l];
-							for (let m = 0; m < informations.length; m++) {
-								const information = informations[m];
-								for (let n = 0; n < information.accounts.length; n++) {
-									const account = information.accounts[n];
-									// same entry
-									if (information.name === outerInformation.name && account.socialMedia === outputSocialMedia) {
-										outputText += account.userName + space;
+		if (inputText) {
+			for (let i = 0; i < inputText.split(space).length; i++) {
+				let outerFlag = true;
+				const outerWord = inputText.split(space)[i];
+				outputText += outerWord + space;
+				for (let j = 0; j < informations.length; j++) {
+					const outerInformation = informations[j];
+					for (let k = 0; k < outerInformation.accounts.length; k++) {
+						const outerAccount = outerInformation.accounts[k];
+						if (outerWord[0] === '@') {
+							if (outerAccount.userName === outerWord && outerAccount.socialMedia === inputSocialMedia) {
+								outerFlag = false;
+								let outputTextDuplicate = outputText;
+								outputText = '';
+								for (let l = 0; l < outputTextDuplicate.split(space).length - 2; l++) {
+									const outputTextDuplicateWord = outputTextDuplicate.split(space)[l];
+									outputText += outputTextDuplicateWord + space;
+								}
+								if (nameEntries.indexOf(outerInformation.name) === - 1) {
+									nameEntries.push(outerInformation.name);
+								}
+								loop: for (let l = 0; l < inputText.split(space).length; l++) {
+									let innerFlag = true;
+									for (let m = 0; m < informations.length; m++) {
+										const information = informations[m];
+										for (let n = 0; n < information.accounts.length; n++) {
+											const account = information.accounts[n];
+											// same entry
+											if (information.name === outerInformation.name && account.socialMedia === outputSocialMedia) {
+												innerFlag = false;
+												outputText += account.userName + space;
+												break loop;
+											}
+										}
+									}
+									if (innerFlag) {
+										alert(`No ${outputSocialMedia} account found for ${outerInformation.name}!`);
 										break loop;
 									}
 								}
@@ -120,9 +129,15 @@
 						}
 					}
 				}
+				if (outerWord[0] === '@' && outerFlag) {
+					alert(`No ${inputSocialMedia} account with this username found: ${outerWord}!`);
+				}
 			}
+			outputText = outputText.substring(0, outputText.lastIndexOf(space));
 		}
-		outputText = outputText.substring(0, outputText.lastIndexOf(space));
+		else {
+			alert('empty!');
+		}
 	};
 
 	const captureSocialMediaEntry = (event) => {
