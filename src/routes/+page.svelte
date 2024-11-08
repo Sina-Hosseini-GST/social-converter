@@ -93,6 +93,7 @@
 				for (let k = 0; k < outerInformation.accounts.length; k++) {
 					const outerAccount = outerInformation.accounts[k];
 					if (outerWord[0] === '@' && outerAccount.userName === outerWord && outerAccount.socialMedia === inputSocialMedia) {
+						console.log(outputText);
 						let outputTextDuplicate = outputText;
 						outputText = '';
 						for (let l = 0; l < outputTextDuplicate.split(space).length - 2; l++) {
@@ -121,6 +122,7 @@
 				}
 			}
 		}
+		outputText = outputText.substring(0, outputText.lastIndexOf(space));
 	};
 
 	const captureSocialMediaEntry = (event) => {
