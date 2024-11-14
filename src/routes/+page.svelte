@@ -19,6 +19,14 @@
 		const localStorageInformations = JSON.parse(localStorage.getItem('informations'));
 		if (localStorageInformations.length) {
 			informations = localStorageInformations;
+			localStorageInformations.forEach(entry => {
+				entry.accounts.forEach(accountEntry => {
+					const socialMediaEntry = accountEntry.socialMedia;
+					if (socialMediaEntries.indexOf(socialMediaEntry) === - 1) {
+						socialMediaEntries.push(socialMediaEntry);
+					}
+				});
+			});
 		}
 	});
 
@@ -122,7 +130,7 @@
 											// same entry
 											if (information.name === outerInformation.name && account.socialMedia === outputSocialMedia) {
 												innerFlag = false;
-												outputText += account.userName + space;
+												outputText += `<span class='text-[red]'>${account.userName}</span>${space}`;
 												break loop;
 											}
 										}
@@ -244,7 +252,9 @@
 				<svg class="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="2 1 20 22"><path d="M0 0h24v24H0z" fill="none"></path><path d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h4v8c0 1.1.9 2 2 2h8v2h-2l3 3 3-3h-2v-2h4zM10 8h6v6h2V8c0-1.1-.9-2-2-2h-6v2z"></path></svg>
 			</button>
 			<div class="flex flex-col flex-1 overflow-hidden border border-gray-400 rounded focus-within:border-black">
-				<textarea class="tracking-widest resize-none bg-sky-100 size-full focus:outline-none xl:p-3 placeholder:text-gray-500 focus:bg-white transition-colors duration-[250ms]" bind:value={outputText}></textarea>
+				<p class="tracking-widest bg-sky-100 size-full xl:p-3">
+					{@html outputText}
+				</p>
 				<select class="w-full h-12 tracking-wider text-black bg-sky-300 focus:outline-none xl:px-3" disabled={!informations.length && true} bind:value={outputSocialMedia}>
 					{#each socialMediaEntries as socialMediaEntry}
 						<option>
