@@ -2,8 +2,8 @@
 @tailwind components;
 
 @font-face {
-  font-family: 'roboto-thin';
-  src: url(lib/fonts/roboto.thin.ttf);
+  font-family: 'roboto';
+  src: url(lib/fonts/roboto.ttf);
 }
 
 @tailwind utilities;

@@ -1,8 +1,15 @@
 <script>
 	let informations = $state([]);
-	
-	let socialMediaEntries = $state([]);
-	let capturedSocialMediaEntry = $state('');
+
+	let socialMediaEntries = $derived(
+		[
+			...new Set(
+			  informations.flatMap(information =>
+			    information.accounts.map(account => account.socialMedia)
+			  )
+			)
+		]
+	);
 
 	let nameEntries = $state([]);
 
@@ -11,22 +18,14 @@
 	let userName = $state('');
 
 	let inputText = $state('');
-	let inputSocialMedia = $state();
+	let inputSocialMedia = $state('');
 	let outputText = $state('');
-	let outputSocialMedia = $state();
+	let outputSocialMedia = $state('');
 
 	$effect(() => {
 		const localStorageInformations = JSON.parse(localStorage.getItem('informations'));
 		if (localStorageInformations.length) {
 			informations = localStorageInformations;
-			localStorageInformations.forEach(entry => {
-				entry.accounts.forEach(accountEntry => {
-					const socialMediaEntry = accountEntry.socialMedia;
-					if (socialMediaEntries.indexOf(socialMediaEntry) === - 1) {
-						socialMediaEntries.push(socialMediaEntry);
-					}
-				});
-			});
 		}
 	});
 
@@ -67,6 +66,7 @@
 
 			if (flag) {
 				informations.push({
+					id: informations.length ? informations[informations.length - 1].id + 1 : 1,
 					name,
 					accounts: [
 						{
@@ -75,10 +75,6 @@
 						}
 					]
 				});
-			}
-
-			if (socialMediaEntries.indexOf(socialMedia) === - 1) {
-				socialMediaEntries.push(socialMedia);
 			}
 
 			if (entryIndex === 1) {
@@ -155,24 +151,6 @@
 		}
 	};
 
-	const captureSocialMediaEntry = (event) => {
-		capturedSocialMediaEntry = event.target.value;
-	};
-
-	const editSocialMediaEntry = (event) => {
-		for (let i = 0; i < socialMediaEntries.length; i++) {
-			if (socialMediaEntries[i] === capturedSocialMediaEntry) {
-				socialMediaEntries[i] = event.target.value;
-			}
-		}
-	};
-
-	const submitEditedSocialMediaEntry = (event) => {
-		if (event.key === 'Enter') {
-			event.target.blur();
-		}
-	};
-
 	const localStorageHandler = () => {
 		localStorage.setItem('informations', JSON.stringify(informations));
 	};
@@ -220,8 +198,8 @@
 							{#each information.accounts as account, j}
 								<li class="flex border-b border-white xl:leading-8">
 									<div class="flex flex-1">
-										<input placeholder="Social media (e.g., Instagram)" class="w-1/2 border-r border-white bg-lime-300 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.socialMedia} onkeydown={ (event) => submitEditedSocialMediaEntry(event) } onblur={ (event) => editSocialMediaEntry(event) } onfocus={ (event) => captureSocialMediaEntry(event) }>
-										<input placeholder="@username (e.g., @sinaGST)" class="w-1/2 border-r border-white bg-lime-300 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.userName}>
+										<input placeholder="Social media (e.g., Instagram)" class="w-1/2 bg-blue-400 border-r border-white xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.socialMedia}>
+										<input placeholder="@username (e.g., @sinaGST)" class="w-1/2 bg-blue-400 border-r border-white xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.userName}>
 									</div>
 									<button class="size-8 flex justify-center items-center bg-lime-500 hover:bg-lime-400 transition-colors duration-[250ms]" onclick={ () => {informations[i].accounts.splice(j, 1); !informations[i].accounts.length && informations.splice(i, 1);} }>
 										<svg class="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="5 3 14 18"><path d="M0 0h24v24H0z" fill="none"></path><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
@@ -235,7 +213,7 @@
 		</section>
 		<section class="flex flex-col flex-1 xl:gap-3">
 			<div class="flex flex-col flex-1 overflow-hidden border border-gray-400 rounded focus-within:border-black">
-				<select class="w-full h-12 tracking-wider text-black bg-sky-300 focus:outline-none xl:px-3" disabled={!informations.length && true} bind:value={inputSocialMedia}>
+				<select class="w-full h-12 tracking-wider text-black bg-gray-300 focus:outline-none xl:px-3" disabled={!informations.length && true} bind:value={inputSocialMedia}>
 					{#each socialMediaEntries as socialMediaEntry}
 						<option>
 							{socialMediaEntry}
@@ -246,16 +224,16 @@
 							</option>
 					{/each}
 				</select>
-				<textarea class="tracking-widest resize-none bg-sky-100 size-full focus:outline-none xl:p-3 placeholder:text-gray-500 focus:bg-white transition-colors duration-[250ms]" bind:value={inputText}></textarea>
+				<textarea class="tracking-widest resize-none bg-gray-100 size-full focus:outline-none xl:p-3 placeholder:text-gray-500 focus:bg-white transition-colors duration-[250ms]" bind:value={inputText}></textarea>
 			</div>
-			<button class="h-12 w-full flex justify-center items-center bg-teal-400 hover:bg-teal-500 transition-colors duration-[250ms] rounded" onclick={ convert }>
+			<button class="h-12 w-full flex justify-center items-center bg-zinc-500 hover:bg-zinc-600 transition-colors duration-[250ms] rounded" onclick={ convert }>
 				<svg class="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="2 1 20 22"><path d="M0 0h24v24H0z" fill="none"></path><path d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h4v8c0 1.1.9 2 2 2h8v2h-2l3 3 3-3h-2v-2h4zM10 8h6v6h2V8c0-1.1-.9-2-2-2h-6v2z"></path></svg>
 			</button>
 			<div class="flex flex-col flex-1 overflow-hidden border border-gray-400 rounded focus-within:border-black">
-				<p class="tracking-widest bg-sky-100 size-full xl:p-3">
+				<p class="tracking-widest bg-gray-100 size-full xl:p-3">
 					{@html outputText}
 				</p>
-				<select class="w-full h-12 tracking-wider text-black bg-sky-300 focus:outline-none xl:px-3" disabled={!informations.length && true} bind:value={outputSocialMedia}>
+				<select class="w-full h-12 tracking-wider text-black bg-gray-300 focus:outline-none xl:px-3" disabled={!informations.length && true} bind:value={outputSocialMedia}>
 					{#each socialMediaEntries as socialMediaEntry}
 						<option>
 							{socialMediaEntry}
