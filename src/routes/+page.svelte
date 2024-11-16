@@ -261,9 +261,14 @@
 			<div class="flex flex-col flex-1 overflow-auto tracking-widest xl:gap-3">
 				{#each informations as information, i}
 					<div class="text-white">
-						{#if information.accounts.length}
-							<input placeholder="Give the account a name (e.g., Sina)" class="sticky top-0 z-10 w-full font-bold border-b border-white bg-lime-400 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={information.name}>
-						{/if}
+						<div class="flex overflow-hidden border-b border-white rounded-tl">
+							<div class="flex items-center justify-center w-10 border-r border-white aspect-square shrink-0 bg-lime-400">
+								<span class="-rotate-45">
+									{i + 1}
+								</span>
+							</div>
+							<input placeholder="Give the account a name (e.g., Sina)" class="sticky top-0 z-10 w-full font-bold bg-lime-500 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={information.name}>
+						</div>
 						<ul class="text-xs">
 							{#each information.accounts as account, j}
 								<li class="flex border-b border-white xl:leading-8">
@@ -271,13 +276,13 @@
 										<input placeholder="Social media (e.g., Instagram)" class="w-1/2 transition-colors duration-[250ms] border-r border-white bg-lime-500 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.socialMedia} onblur={ (event) => alertDuplicates(i, j, event) }>
 										<input placeholder="@username (e.g., @sinaGST)" class="w-1/2 border-r border-white bg-lime-500 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.userName}>
 									</div>
-									<button class="size-8 flex justify-center items-center bg-lime-500 hover:bg-lime-500 transition-colors duration-[250ms]" onclick={ () => {confirm(`Delete ${information.name}'s ${account.socialMedia} account?`) && informations[i].accounts.splice(j, 1); !informations[i].accounts.length && informations.splice(i, 1);} }>
+									<button class="size-8 flex justify-center items-center bg-lime-500 hover:bg-lime-400 transition-colors duration-[250ms]" onclick={ () => {confirm(`Delete ${information.name}'s ${account.socialMedia} account?`) && informations[i].accounts.splice(j, 1); !informations[i].accounts.length && informations.splice(i, 1);} }>
 										<svg class="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="5 3 14 18"><path d="M0 0h24v24H0z" fill="none"></path><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
 									</button>
 								</li>
 							{/each}
 						</ul>
-						<button class="flex items-center justify-center w-full h-10 tracking-widest bg-lime-400" onclick={ () => {confirm(`Delete all ${informations[i].name} accounts?`) && informations.splice(i, 1);} }>
+						<button class="flex items-center justify-center w-full h-10 transition-colors duration-[250ms] bg-lime-500 hover:bg-lime-400" onclick={ () => {confirm(`Delete all ${informations[i].name} accounts?`) && informations.splice(i, 1);} }>
 							<svg class="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="5 3 14 18"><path d="M0 0h24v24H0z" fill="none"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
 						</button>
 					</div>
