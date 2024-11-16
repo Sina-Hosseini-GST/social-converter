@@ -155,6 +155,13 @@
 	const localStorageHandler = () => {
 		localStorage.setItem('informations', JSON.stringify(informations));
 	};
+
+	const deleteEntries = () => {
+		if (confirm('Delete All Accounts?')) {
+			informations = [];
+		}
+
+	}
 </script>
 
 <svelte:head>
@@ -211,6 +218,11 @@
 					</div>
 				{/each}
 			</div>
+			{#if informations.length}
+				<button class="h-12 mt-auto w-full flex justify-center items-center bg-red-600 hover:bg-red-500 transition-colors duration-[250ms] rounded" onclick={ deleteEntries }>
+					<svg class="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="5 3 14 18"><path d="M0 0h24v24H0z" fill="none"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+				</button>
+			{/if}
 		</section>
 		<section class="flex flex-col flex-1 xl:gap-3">
 			<div class="flex flex-col flex-1 overflow-hidden border border-gray-400 rounded focus-within:border-black">
