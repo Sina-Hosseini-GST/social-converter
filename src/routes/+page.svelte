@@ -188,14 +188,33 @@
 		}
 	};
 
-	const alertDuplicates = (informationIndex, accountIndex) => {
-		const newSocialMedia = informations[informationIndex].accounts[accountIndex].socialMedia;
+	const alertDuplicates = (informationIndex, accountIndex, event) => {
+		const newSocialMedia = informations[informationIndex].accounts[accountIndex].socialMedia.trim();
+		
+		let flag = true;
 		const accounts = informations[informationIndex].accounts;
 		for (let i = 0; i < accounts.length; i++) {
 			const oldSocialMedia = accounts[i].socialMedia;
 			if (oldSocialMedia === newSocialMedia && i !== accountIndex) {
-				alert(`${oldSocialMedia} account already added for ${informations[informationIndex].name}!`);
+				alert(`${oldSocialMedia ? oldSocialMedia : 'empty'} account already added for ${informations[informationIndex].name}!`);
+				event.target.classList.remove('bg-lime-400');
+				event.target.classList.add('bg-[red]');
+				flag = false;
 			}
+		}
+		
+		if (flag) {
+			// ul tag
+			for (let i = 0; i < event.target.parentElement.parentElement.parentElement.children.length; i++) {
+				event.target.parentElement.parentElement.parentElement.children[i].children[0].children[0].classList.remove('bg-[red]', 'bg-[orangered]');
+				event.target.parentElement.parentElement.parentElement.children[i].children[0].children[0].classList.add('bg-lime-400');
+			}
+		}
+		
+		if (!newSocialMedia) {
+			alert('empty!');
+			event.target.classList.remove('bg-lime-400');
+			event.target.classList.add('bg-[orangered]');
 		}
 	}
 </script>
@@ -222,13 +241,13 @@
 	<main class="flex flex-1 overflow-hidden xl:gap-3">
 		<section class="flex flex-col w-1/4 xl:gap-3">
 			<div class="flex tracking-widest xl:gap-3">
-				<button class="w-1/2 text-white bg-emerald-400 transition-colors duration-[250ms] hover:bg-emerald-500 text-center h-12 rounded flex justify-center gap-1.5 items-center" onclick={ exportInformations }>
+				<button class="w-1/2 text-white bg-emerald-400 transition-colors duration-[250ms] hover:bg-emerald-500 text-center h-12 rounded flex justify-center xl:gap-2 items-center" onclick={ exportInformations }>
 					<svg class="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
 					<span>
 						Export
 					</span>
 				</button>
-				<label class="w-1/2 text-white bg-emerald-400 transition-colors duration-[250ms] hover:bg-emerald-500 text-center h-12 rounded flex justify-center gap-1.5 items-center cursor-pointer">
+				<label class="w-1/2 text-white bg-emerald-400 transition-colors duration-[250ms] hover:bg-emerald-500 text-center h-12 rounded flex justify-center xl:gap-2 items-center cursor-pointer">
 					<input type="file" class="hidden" onchange={ (event) => importInformations(event) }>
 					<svg class="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
 					<span>
@@ -243,13 +262,13 @@
 				{#each informations as information, i}
 					<div class="text-white">
 						{#if information.accounts.length}
-							<input placeholder="Give the account a name (e.g., Sina)" class="sticky top-0 z-10 w-full border-b border-white bg-lime-500 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={information.name}>
+							<input placeholder="Give the account a name (e.g., Sina)" class="sticky top-0 z-10 w-full font-bold border-b border-white bg-lime-500 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={information.name}>
 						{/if}
 						<ul class="text-xs">
 							{#each information.accounts as account, j}
 								<li class="flex border-b border-white xl:leading-8">
 									<div class="flex flex-1">
-										<input placeholder="Social media (e.g., Instagram)" class="w-1/2 border-r border-white bg-lime-400 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.socialMedia} onblur={ alertDuplicates(i , j) }>
+										<input placeholder="Social media (e.g., Instagram)" class="w-1/2 transition-colors duration-[250ms] border-r border-white bg-lime-400 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.socialMedia} onblur={ (event) => alertDuplicates(i, j, event) }>
 										<input placeholder="@username (e.g., @sinaGST)" class="w-1/2 border-r border-white bg-lime-400 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={account.userName}>
 									</div>
 									<button class="size-8 flex justify-center items-center bg-lime-500 hover:bg-lime-400 transition-colors duration-[250ms]" onclick={ () => {confirm(`Delete ${information.name}'s ${account.socialMedia} account?`) && informations[i].accounts.splice(j, 1); !informations[i].accounts.length && informations.splice(i, 1);} }>
@@ -266,8 +285,11 @@
 				{/each}
 			</div>
 			{#if informations.length}
-				<button class="h-12 mt-auto w-full flex justify-center items-center bg-red-600 hover:bg-red-700 transition-colors duration-[250ms] rounded" onclick={ deleteEntries }>
+				<button class="h-12 mt-auto w-full flex xl:gap-2 justify-center items-center bg-red-600 hover:bg-red-700 transition-colors duration-[250ms] rounded text-white tracking-widest" onclick={ deleteEntries }>
 					<svg class="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="5 3 14 18"><path d="M0 0h24v24H0z" fill="none"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+					<span>
+						Delete All Accounts
+					</span>
 				</button>
 			{/if}
 		</section>
