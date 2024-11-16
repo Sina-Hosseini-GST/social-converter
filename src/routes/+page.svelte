@@ -17,7 +17,7 @@
 	let socialMedia = $state('');
 	let userName = $state('');
 
-	let defaultSocialMedia = 'Select Account If Added';
+	const defaultSocialMedia = 'Select Account If Added';
 	
 	let inputText = $state('');
 	let inputSocialMedia = $state(defaultSocialMedia);
@@ -196,9 +196,9 @@
 			<h1 class="tracking-wider text-white bg-green-500 text-center leading-[3rem] rounded">
 				Accounts Added
 			</h1>
-			<div class="flex flex-col overflow-auto xl:gap-3">
+			<div class="flex flex-col overflow-auto xl:gap-3 tracking-widest flex-1">
 				{#each informations as information, i}
-					<div class="tracking-widest text-white">
+					<div class="text-white">
 						{#if information.accounts.length}
 							<input placeholder="Give the account a name (e.g., Sina)" class="sticky top-0 z-10 w-full border-b border-white bg-lime-500 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" bind:value={information.name}>
 						{/if}
@@ -216,6 +216,10 @@
 							{/each}
 						</ul>
 					</div>
+					{:else}
+						<p class="font-bold leading-[3rem] border border-gray-500 h-full flex justify-center items-center rounded text-gray-500">
+							No Accounts Added
+						</p>
 				{/each}
 			</div>
 			{#if informations.length}
