@@ -77,7 +77,6 @@ const App = () => {
           [
             ...informations,
             {
-              id: entryIndex,
               name,
               accounts: [
                 {
@@ -106,14 +105,14 @@ const App = () => {
 
 	const convert = () => {
 		const space = ' ';
-		setNameEntries([])
-    setOutputText('')
+    setNameEntries([]);
+    setOutputText('');
 		
 		if (inputText) {
 			for (let i = 0; i < inputText.split(space).length; i++) {
 				let outerFlag = true;
 				const outerWord = inputText.split(space)[i];
-				outputText += outerWord + space;
+        setOutputText(outputText + outerWord + space);
 				for (let j = 0; j < informations.length; j++) {
 					const outerInformation = informations[j];
 					for (let k = 0; k < outerInformation.accounts.length; k++) {
@@ -122,13 +121,13 @@ const App = () => {
 							if (outerAccount.userName === outerWord && outerAccount.socialMedia === inputSocialMedia) {
 								outerFlag = false;
 								let outputTextDuplicate = outputText;
-                setOutputText('')
+                setOutputText('');
 								for (let l = 0; l < outputTextDuplicate.split(space).length - 2; l++) {
 									const outputTextDuplicateWord = outputTextDuplicate.split(space)[l];
-									outputText += outputTextDuplicateWord + space;
+                  setOutputText(outputText + outputTextDuplicateWord + space)
 								}
 								if (nameEntries.indexOf(outerInformation.name) === - 1) {
-                  setNameEntries([...nameEntries, outerInformation.name]);
+                  setNameEntries([...nameEntries, outerInformation.name])
 								}
 								loop: for (let l = 0; l < inputText.split(space).length; l++) {
 									let innerFlag = true;
@@ -139,7 +138,7 @@ const App = () => {
 											// same entry
 											if (information.name === outerInformation.name && account.socialMedia === outputSocialMedia) {
 												innerFlag = false;
-												outputText += `<span class='text-[red] font-bold'>${account.userName}</span>${space}`;
+												setOutputText(outputText + `<span className='text-[red] font-bold'>${account.userName}</span>` + space);
 												break loop;
 											}
 										}
@@ -250,14 +249,14 @@ const App = () => {
           <section className="flex flex-col w-1/4 xl:gap-3">
             <div className="flex tracking-widest xl:gap-3">
               <button className="w-1/2 text-white bg-emerald-400 transition-colors duration-[250ms] hover:bg-emerald-500 text-center h-12 rounded flex justify-center xl:gap-2 items-center" onClick={ exportInformations }>
-                <svg className="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <svg className="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 <span>
                   Export
                 </span>
               </button>
               <label className="w-1/2 text-white bg-emerald-400 transition-colors duration-[250ms] hover:bg-emerald-500 text-center h-12 rounded flex justify-center xl:gap-2 items-center cursor-pointer">
                 <input type="file" className="hidden" onChange={ (event) => importInformations(event) } />
-                <svg className="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <svg className="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 <span>
                   Import
                 </span>
@@ -268,7 +267,7 @@ const App = () => {
             </h1>
             <div className="flex flex-col flex-1 overflow-auto tracking-widest xl:gap-3">
               {informations.length > 0 ? informations.map((information, i) => (
-                <div className="text-white">
+                <div className="text-white" key={i}>
                   <div className="flex overflow-hidden border-b border-white rounded-tl">
                     <div className="flex items-center justify-center w-10 border-r border-white aspect-square shrink-0 bg-lime-400">
                       <span className="-rotate-45">
@@ -284,14 +283,14 @@ const App = () => {
                   </div>
                   <ul className="text-xs">
                     {information.accounts.map((account, j) => (
-                      <li className="flex border-b border-white xl:leading-8">
+                      <li className="flex border-b border-white xl:leading-8" key={j}>
                         <div className="flex flex-1">
                           <input placeholder="Social media (e.g., Instagram)" className="w-1/2 transition-colors duration-[250ms] border-r border-white bg-lime-500 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event)=> {
                                 const newInformations = [...informations];
                                 newInformations[i].accounts[j].socialMedia = event.target.value;
                                 setInformations(newInformations);
                               }
-                          } value={account.socialMedia} onblur={ (event) => alertDuplicates(i, j, event) } />
+                          } value={account.socialMedia} onBlur={ (event) => alertDuplicates(i, j, event) } />
                           <input placeholder="@username (e.g., @sinaGST)" className="w-1/2 border-r border-white bg-lime-500 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event)=> {
                                 const newInformations = [...informations];
                                 newInformations[i].accounts[j].userName = event.target.value;
@@ -324,7 +323,7 @@ const App = () => {
                   </button>
                 </div>
               )) : (
-                <p class="font-bold leading-[3rem] border border-gray-500 h-full flex justify-center items-center rounded text-gray-500">
+                <p className="font-bold leading-[3rem] border border-gray-500 h-full flex justify-center items-center rounded text-gray-500">
 						    	No Accounts Added
 						    </p>
               )}
@@ -347,8 +346,8 @@ const App = () => {
                 <option className="text-[red]">
                   {defaultSocialMedia}
                 </option>
-                {socialMediaEntries.map((socialMediaEntry) => (
-                  <option>
+                {socialMediaEntries.map((socialMediaEntry, index) => (
+                  <option key={index}>
                     {socialMediaEntry}
                   </option>
                 ))}
@@ -371,8 +370,8 @@ const App = () => {
                 <option className="text-[red]">
                   {defaultSocialMedia}
                 </option>
-                {socialMediaEntries.map((socialMediaEntry) => (
-                  <option>
+                {socialMediaEntries.map((socialMediaEntry, index) => (
+                  <option key={index}>
                     {socialMediaEntry}
                   </option>
                 ))}
@@ -384,8 +383,8 @@ const App = () => {
               Accounts Mentioned
             </h1>
             <ul className="flex flex-col xl:gap-3">
-              {nameEntries.map((nameEntry) => (
-                <li className="tracking-widest text-white bg-orange-400 xl:leading-8 xl:px-3">
+              {nameEntries.map((nameEntry, index) => (
+                <li key={index} className="tracking-widest text-white bg-orange-400 xl:leading-8 xl:px-3">
                   {nameEntry}
                 </li>
               ))}
