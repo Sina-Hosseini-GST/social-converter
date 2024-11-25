@@ -105,39 +105,33 @@ const App = () => {
 
   const convert = () => {
     const space = ' ';
-    setNameEntries([]);  // Clear name entries on each conversion
-    let newOutputText = '';  // Initialize a new variable to accumulate output text
+    let newNameEntries = [];
+    let newOutputText = '';
 
     if (inputText) {
-      // Loop through each word in the input text
       for (let i = 0; i < inputText.split(space).length; i++) {
         let outerFlag = true;
         const outerWord = inputText.split(space)[i];
-        newOutputText += outerWord + space;  // Append current word to newOutputText
-
-        // Loop through the informations array to find matching social media accounts
+        newOutputText += outerWord + space;
         for (let j = 0; j < informations.length; j++) {
-          const outerInformation = informations[j];
+          const outerInformation = informations[j];          
           for (let k = 0; k < outerInformation.accounts.length; k++) {
             const outerAccount = outerInformation.accounts[k];
-            if (outerWord[0] === '@') {  // If the word starts with "@"
+            if (outerWord[0] === '@') {
               if (outerAccount.userName === outerWord && outerAccount.socialMedia === inputSocialMedia) {
                 outerFlag = false;
 
-                let outputTextDuplicate = newOutputText;  // Save current output text
-                newOutputText = '';  // Reset newOutputText to append filtered parts again
+                let outputTextDuplicate = newOutputText;
+                newOutputText = '';
 
-                // Append all previous parts of outputText (except last two words)
                 for (let l = 0; l < outputTextDuplicate.split(space).length - 2; l++) {
                   newOutputText += outputTextDuplicate.split(space)[l] + space;
                 }
 
-                // Add the user's name with styling if it's not already in nameEntries
-                if (nameEntries.indexOf(outerInformation.name) === -1) {
-                  setNameEntries(prevEntries => [...prevEntries, outerInformation.name]);
+                if (newNameEntries.indexOf(outerInformation.name) === -1) {
+                  newNameEntries.push(outerInformation.name);
                 }
 
-                // Look for matching account in informations
                 loop: for (let l = 0; l < inputText.split(space).length; l++) {
                   let innerFlag = true;
                   for (let m = 0; m < informations.length; m++) {
@@ -146,15 +140,15 @@ const App = () => {
                       const account = information.accounts[n];
                       if (information.name === outerInformation.name && account.socialMedia === outputSocialMedia) {
                         innerFlag = false;
-                        newOutputText += `<span className='text-[red] font-bold'>${account.userName}</span>` + space;
-                        break loop;  // Break out of loop after finding a match
+                        newOutputText += `<span class='text-[red] font-bold'>${account.userName}</span>` + space;
+                        break loop;
                       }
                     }
                   }
 
                   if (innerFlag) {
                     alert(`No ${outputSocialMedia} account found for ${outerInformation.name}!`);
-                    break loop;  // Stop if no account found
+                    break loop;
                   }
                 }
               }
@@ -162,14 +156,13 @@ const App = () => {
           }
         }
 
-        // If no matching username was found, show an alert
         if (outerWord[0] === '@' && outerFlag) {
           alert(`No ${inputSocialMedia} account with this username found: ${outerWord}!`);
         }
       }
 
-      // After the loop, set the final outputText state
-      setOutputText(newOutputText.trim());  // Trim to remove trailing space
+      setOutputText(newOutputText.trim());
+      setNameEntries(newNameEntries);
     } else {
       alert('empty!');
     }
