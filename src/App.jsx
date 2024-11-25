@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 const App = () => {
+
+  const outputTextRef = useRef(null)
 
   let [informations, setInformations] = useState([]);
 
@@ -243,10 +245,14 @@ const App = () => {
     }
   };
 
+  const copyOutputText = () => {
+    navigator.clipboard.writeText(outputTextRef.current.textContent);
+  };
+
   return (
     <>
       <div className="xl:max-w-[80rem] mx-auto flex flex-col xl:gap-3 xl:py-3 h-screen">
-        <header>
+        <header className='bg-gray-200 border border-gray-400 rounded xl:p-3'>
           <form className="flex flex-col xl:gap-3" onSubmit={(event) => addEntry(event)}>
             <div className="flex h-12 xl:gap-3">
               <input type="text" placeholder="Give the account a name (e.g., Sina)" className="flex-1 focus:outline-none bg-stone-100 focus:bg-white transition-colors duration-[250ms] xl:px-3 tracking-wider placeholder:text-gray-500 border border-gray-400 focus:border-black rounded" onChange={(event) => setName(event.target.value)} value={name} />
@@ -260,7 +266,7 @@ const App = () => {
         </header>
 
         <main className="flex flex-1 overflow-hidden xl:gap-3">
-          <section className="flex flex-col w-1/4 xl:gap-3">
+          <section className="flex flex-col w-1/4 bg-gray-100 border border-gray-400 rounded xl:gap-3 xl:p-3">
             <div className="flex tracking-widest xl:gap-3">
               <button className="w-1/2 bg-green-600 text-white transition-colors duration-[250ms] hover:bg-green-700 text-center h-12 rounded flex justify-center xl:gap-2 items-center" onClick={exportInformations}>
                 <svg className="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -279,16 +285,16 @@ const App = () => {
             <h1 className="tracking-wider bg-white border text-black border-black text-center leading-[3rem] rounded">
               Accounts Added
             </h1>
-            <div className="flex flex-col flex-1 overflow-auto tracking-widest xl:gap-3">
+            <div className="flex flex-col flex-1 overflow-auto tracking-widest text-black xl:gap-3 xl:px-1.5">
               {informations.length > 0 ? informations.map((information, i) => (
-                <div className="text-black" key={i}>
+                <div key={i}>
                   <div className="sticky top-0 flex overflow-hidden border-b border-white rounded-tl">
                     <div className="flex items-center justify-center w-10 font-bold text-white bg-green-400 border-r border-white aspect-square shrink-0">
                       <span className="-rotate-45">
                         {i + 1}
                       </span>
                     </div>
-                    <input placeholder="Give the account a name (e.g., Sina)" className="z-10 w-full font-bold bg-green-200 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
+                    <input placeholder="Give the account a name (e.g., Sina)" className="z-10 w-full font-bold bg-green-200 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-700" onChange={(event) => {
                       const newInformations = [...informations];
                       newInformations[i].name = event.target.value;
                       setInformations(newInformations);
@@ -299,13 +305,13 @@ const App = () => {
                     {information.accounts.map((account, j) => (
                       <li className="flex border-b border-white xl:leading-8" key={j}>
                         <div className="flex flex-1">
-                          <input placeholder="Social media (e.g., Instagram)" className="w-1/2 transition-colors duration-[250ms] border-r border-white bg-green-200 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
+                          <input placeholder="Social media (e.g., Instagram)" className="w-1/2 transition-colors duration-[250ms] border-r border-white bg-green-200 xl:px-3 focus:outline-none placeholder:text-gray-700" onChange={(event) => {
                             const newInformations = [...informations];
                             newInformations[i].accounts[j].socialMedia = event.target.value;
                             setInformations(newInformations);
                           }
                           } value={account.socialMedia} onBlur={(event) => alertSocialMediaDuplicates(i, j, event)} />
-                          <input placeholder="@username (e.g., @sinaGST)" className="w-1/2 bg-green-200 border-r border-white xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
+                          <input placeholder="@username (e.g., @sinaGST)" className="w-1/2 bg-green-200 border-r border-white xl:px-3 focus:outline-none placeholder:text-gray-700" onChange={(event) => {
                             const newInformations = [...informations];
                             newInformations[i].accounts[j].userName = event.target.value;
                             setInformations(newInformations);
@@ -338,7 +344,7 @@ const App = () => {
                   </button>
                 </div>
               )) : (
-                <p className="font-bold leading-[3rem] border border-gray-500 h-full flex justify-center items-center rounded text-gray-500">
+                <p className="font-bold leading-[3rem] border border-gray-400 h-full flex justify-center items-center rounded text-gray-500">
                   No Accounts Added
                 </p>
               )}
@@ -352,7 +358,7 @@ const App = () => {
               </button>
             )}
           </section>
-          <section className="flex flex-col flex-1 xl:gap-3">
+          <section className="flex flex-col flex-1 bg-gray-100 border border-gray-400 rounded xl:gap-3 xl:p-3">
             <div className="flex flex-col flex-1 overflow-hidden border border-gray-400 rounded focus-within:border-black">
               <select className="w-full h-12 tracking-wider text-black bg-sky-300 focus:outline-none xl:px-3" onChange={(event) => {
                 setInputSocialMedia(event.target.value)
@@ -375,8 +381,11 @@ const App = () => {
             <button className="h-12 w-full flex justify-center items-center bg-sky-500 hover:bg-sky-600 transition-colors duration-[250ms] rounded" onClick={convert}>
               <svg className="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="2 1 20 22"><path d="M0 0h24v24H0z" fill="none"></path><path d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h4v8c0 1.1.9 2 2 2h8v2h-2l3 3 3-3h-2v-2h4zM10 8h6v6h2V8c0-1.1-.9-2-2-2h-6v2z"></path></svg>
             </button>
-            <div className="flex flex-col flex-1 overflow-hidden border border-gray-400 rounded focus-within:border-black">
-              <p className="tracking-widest bg-sky-100 size-full xl:p-3" dangerouslySetInnerHTML={{__html: outputText}} />
+            <div className="relative flex flex-col flex-1 overflow-hidden border border-gray-400 rounded focus-within:border-black group">
+              <button onClick={copyOutputText} className='absolute -top-10 -right-10 group-hover:top-0 group-hover:right-0 flex items-center justify-center transition-all duration-[250ms] rounded-bl bg-black bg-opacity-50 hover:bg-black xl:size-10'>
+                <svg className='w-1/2 fill-white' xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="3 3 18 18"><path fill-rule="evenodd" d="M4.75 3A1.75 1.75 0 003 4.75v9.5c0 .966.784 1.75 1.75 1.75h1.5a.75.75 0 000-1.5h-1.5a.25.25 0 01-.25-.25v-9.5a.25.25 0 01.25-.25h9.5a.25.25 0 01.25.25v1.5a.75.75 0 001.5 0v-1.5A1.75 1.75 0 0014.25 3h-9.5zm5 5A1.75 1.75 0 008 9.75v9.5c0 .966.784 1.75 1.75 1.75h9.5A1.75 1.75 0 0021 19.25v-9.5A1.75 1.75 0 0019.25 8h-9.5zM9.5 9.75a.25.25 0 01.25-.25h9.5a.25.25 0 01.25.25v9.5a.25.25 0 01-.25.25h-9.5a.25.25 0 01-.25-.25v-9.5z"></path></svg>
+              </button>
+              <p className="tracking-widest bg-sky-100 size-full xl:p-3" dangerouslySetInnerHTML={{__html: outputText}} ref={outputTextRef} />
               <select className="w-full h-12 tracking-wider text-black bg-sky-300 focus:outline-none xl:px-3" onChange={(event) => {
                 setOutputSocialMedia(event.target.value)
               }} value={outputSocialMedia}>
@@ -391,13 +400,13 @@ const App = () => {
               </select>
             </div>
           </section>
-          <section className="flex flex-col w-1/4 xl:gap-3">
+          <section className="flex flex-col w-1/4 bg-gray-100 border border-gray-400 rounded xl:gap-3 xl:p-3">
             <h1 className="tracking-wider bg-white border text-black border-black text-center leading-[3rem] rounded">
               Accounts Mentioned
             </h1>
             <ul className="flex flex-col xl:gap-3">
               {nameEntries.map((nameEntry, index) => (
-                <li key={index} className="tracking-widest text-white rounded bg-violet-800 xl:leading-10 xl:px-3">
+                <li key={index} className="tracking-widest text-white rounded bg-emerald-800 xl:leading-10 xl:px-3">
                   {nameEntry}
                 </li>
               ))}
