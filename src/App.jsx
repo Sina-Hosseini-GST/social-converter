@@ -109,6 +109,7 @@ const App = () => {
     const space = ' ';
     let newNameEntries = [];
     let newOutputText = '';
+    let flag = true;
 
     if (inputText) {
       for (let i = 0; i < inputText.split(space).length; i++) {
@@ -160,11 +161,18 @@ const App = () => {
 
         if (outerWord[0] === '@' && outerFlag) {
           alert(`No ${inputSocialMedia} account with this username found: ${outerWord}!`);
+          flag = false;
         }
       }
 
-      setOutputText(newOutputText.trim());
-      setNameEntries(newNameEntries);
+      if (flag) {
+        setOutputText(newOutputText.trim());
+        setNameEntries(newNameEntries);
+      }
+      else {
+        setOutputText('');
+        setNameEntries([]);
+      }
     } else {
       alert('empty!');
     }
@@ -216,7 +224,7 @@ const App = () => {
       const oldSocialMedia = accounts[i].socialMedia;
       if (oldSocialMedia === socialMediaDuplicate && i !== accountIndex) {
         alert(`${oldSocialMedia ? oldSocialMedia : 'empty'} account already added for ${informations[informationIndex].name}!`);
-        event.target.classList.remove('bg-emerald-200');
+        event.target.classList.remove('bg-green-200');
         event.target.classList.add('bg-[red]');
         flag = false;
       }
@@ -226,13 +234,13 @@ const App = () => {
       // ul tag
       for (let i = 0; i < event.target.parentElement.parentElement.parentElement.children.length; i++) {
         event.target.parentElement.parentElement.parentElement.children[i].children[0].children[0].classList.remove('bg-[red]', 'bg-[orangered]');
-        event.target.parentElement.parentElement.parentElement.children[i].children[0].children[0].classList.add('bg-emerald-200');
+        event.target.parentElement.parentElement.parentElement.children[i].children[0].children[0].classList.add('bg-green-200');
       }
     }
 
     if (!socialMediaDuplicate) {
       alert('empty!');
-      event.target.classList.remove('bg-emerald-200');
+      event.target.classList.remove('bg-green-200');
       event.target.classList.add('bg-[orangered]');
     }
   };
@@ -256,13 +264,13 @@ const App = () => {
         <main className="flex flex-1 overflow-hidden xl:gap-3">
           <section className="flex flex-col w-1/4 xl:gap-3">
             <div className="flex tracking-widest xl:gap-3">
-              <button className="w-1/2 bg-emerald-600 text-white transition-colors duration-[250ms] hover:bg-emerald-700 text-center h-12 rounded flex justify-center xl:gap-2 items-center" onClick={exportInformations}>
+              <button className="w-1/2 bg-green-600 text-white transition-colors duration-[250ms] hover:bg-green-700 text-center h-12 rounded flex justify-center xl:gap-2 items-center" onClick={exportInformations}>
                 <svg className="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 <span>
                   Export
                 </span>
               </button>
-              <label className="w-1/2 bg-emerald-600 text-white transition-colors duration-[250ms] hover:bg-emerald-700 text-center h-12 rounded flex justify-center xl:gap-2 items-center cursor-pointer">
+              <label className="w-1/2 bg-green-600 text-white transition-colors duration-[250ms] hover:bg-green-700 text-center h-12 rounded flex justify-center xl:gap-2 items-center cursor-pointer">
                 <input type="file" className="hidden" onChange={(event) => importInformations(event)} />
                 <svg className="w-auto h-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" color="" viewBox="3 3 18 18"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 <span>
@@ -277,12 +285,12 @@ const App = () => {
               {informations.length > 0 ? informations.map((information, i) => (
                 <div className="text-black" key={i}>
                   <div className="sticky top-0 flex overflow-hidden border-b border-white rounded-tl">
-                    <div className="flex items-center justify-center w-10 font-bold text-white border-r border-white aspect-square shrink-0 bg-emerald-400">
+                    <div className="flex items-center justify-center w-10 font-bold text-white bg-green-400 border-r border-white aspect-square shrink-0">
                       <span className="-rotate-45">
                         {i + 1}
                       </span>
                     </div>
-                    <input placeholder="Give the account a name (e.g., Sina)" className="z-10 w-full font-bold bg-emerald-200 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
+                    <input placeholder="Give the account a name (e.g., Sina)" className="z-10 w-full font-bold bg-green-200 xl:leading-10 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
                       const newInformations = [...informations];
                       newInformations[i].name = event.target.value;
                       setInformations(newInformations);
@@ -293,20 +301,20 @@ const App = () => {
                     {information.accounts.map((account, j) => (
                       <li className="flex border-b border-white xl:leading-8" key={j}>
                         <div className="flex flex-1">
-                          <input placeholder="Social media (e.g., Instagram)" className="w-1/2 transition-colors duration-[250ms] border-r border-white bg-emerald-200 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
+                          <input placeholder="Social media (e.g., Instagram)" className="w-1/2 transition-colors duration-[250ms] border-r border-white bg-green-200 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
                             const newInformations = [...informations];
                             newInformations[i].accounts[j].socialMedia = event.target.value;
                             setInformations(newInformations);
                           }
                           } value={account.socialMedia} onBlur={(event) => alertSocialMediaDuplicates(i, j, event)} />
-                          <input placeholder="@username (e.g., @sinaGST)" className="w-1/2 border-r border-white bg-emerald-200 xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
+                          <input placeholder="@username (e.g., @sinaGST)" className="w-1/2 bg-green-200 border-r border-white xl:px-3 focus:outline-none placeholder:text-gray-100" onChange={(event) => {
                             const newInformations = [...informations];
                             newInformations[i].accounts[j].userName = event.target.value;
                             setInformations(newInformations);
                           }
                           } value={account.userName} />
                         </div>
-                        <button className="size-8 flex justify-center items-center bg-emerald-300 hover:bg-emerald-400 transition-colors duration-[250ms]" onClick={() => {
+                        <button className="size-8 flex justify-center items-center bg-green-300 hover:bg-green-400 transition-colors duration-[250ms]" onClick={() => {
                           if (confirm(`Delete ${information.name}'s ${account.socialMedia} account?`)) {
                             const newInformations = [...informations];
                             newInformations[i].accounts.splice(j, 1);
@@ -321,7 +329,7 @@ const App = () => {
                       </li>
                     ))}
                   </ul>
-                  <button className="flex items-center justify-center w-full h-10 transition-colors duration-[250ms] bg-emerald-300 hover:bg-emerald-400" onClick={() => {
+                  <button className="flex items-center justify-center w-full h-10 transition-colors duration-[250ms] bg-green-300 hover:bg-green-400" onClick={() => {
                     if (confirm(`Delete all ${informations[i].name} accounts?`)) {
                       const newInformations = [...informations];
                       newInformations.splice(i, 1);
@@ -338,7 +346,7 @@ const App = () => {
               )}
             </div>
             {informations.length > 0 && (
-              <button className="h-12 mt-auto w-full flex xl:gap-2 justify-center items-center bg-emerald-600 text-white hover:bg-emerald-700 transition-colors duration-[250ms] rounded tracking-widest" onClick={deleteEntries}>
+              <button className="h-12 mt-auto w-full flex xl:gap-2 justify-center items-center bg-green-600 text-white hover:bg-green-700 transition-colors duration-[250ms] rounded tracking-widest" onClick={deleteEntries}>
                 <svg className="w-auto h-1/2 fill-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" color="" viewBox="5 3 14 18"><path d="M0 0h24v24H0z" fill="none"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
                 <span>
                   Delete All Accounts
