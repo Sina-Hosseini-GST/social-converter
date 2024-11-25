@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const App = () => {
-
-  const myRef = useRef([]);
 
   let [informations, setInformations] = useState([]);
 
@@ -399,7 +397,7 @@ const App = () => {
             </h1>
             <ul className="flex flex-col xl:gap-3">
               {nameEntries.map((nameEntry, index) => (
-                <li key={index} className="tracking-widest text-white bg-green-800 rounded xl:leading-10 xl:px-3">
+                <li key={index} className="tracking-widest text-white rounded bg-violet-800 xl:leading-10 xl:px-3">
                   {nameEntry}
                 </li>
               ))}
